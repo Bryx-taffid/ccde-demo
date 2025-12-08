@@ -1,10 +1,22 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Text Encrypter";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div>
+    <h1>Text Encrypter</h1>
+    <form method="post">
+        <div>
+            <label for="inputText">Enter Text:</label>
+            <input type="text" id="inputText" name="inputText" required/>
+        </div>
+        <div>
+            <button type="submit">Encrypt</button>
+        </div>
+        <div>
+            <label for="encryptedText">Encrypted Text:</label>
+            <textarea id="encryptedText" name="encryptedText" readonly>@Model.EncryptedText</textarea>
+        </div>
+    </form>
 </div>
