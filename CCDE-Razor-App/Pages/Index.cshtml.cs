@@ -35,7 +35,7 @@ public class IndexModel(IConfiguration config) : PageModel
     // BUG: No IV, so decryption is impossible.
 
     /// <summary>
-    /// Encrypts the given plain text using AES encryption with a random-generated IV (prepended to encrypted output) and a key derived from PBKDF2.
+    /// Encrypts the given plain text using AES encryption with a randomly generated IV (prepended to encrypted output) and a key derived from PBKDF2.
     /// </summary>
     /// <param name="plainText">The text to encrypt.</param>
     /// <returns>The encrypted text.</returns>
