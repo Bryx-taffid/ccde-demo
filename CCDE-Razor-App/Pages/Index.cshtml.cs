@@ -4,11 +4,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CCDE_Razor_App.Pages;
 
-public class IndexModel(IConfiguration config, ILogger logger) : PageModel
+public class IndexModel(IConfiguration config, ILogger<IndexModel> logger) : PageModel
 {
     // TODO: Apply the best practices and recommendations regarding accessibility
 
     private const int OutputLength = 32; // 256 bits
+    private const int MinSaltBytes = 16;
+    private const int MinIterations = 100000;
+    private const int MaxIterations = 5000000;
+    private const int MinPasswordLength = 8;
 
     /// <summary>
     /// The input text to be encrypted.
@@ -22,17 +26,23 @@ public class IndexModel(IConfiguration config, ILogger logger) : PageModel
     public string? EncryptedText { get; set; }
 
     /// <summary>
+    /// This error message is visible to the user in the UI
+    /// </summary>
+    public string? ErrorMessage { get; set; }
+
+    /// <summary>
     /// Handles the POST request, where the input text is encrypted.
     /// </summary>
     public void OnPost()
     {
-        if (!string.IsNullOrEmpty(InputText))
+        if (string.IsNullOrWhiteSpace(InputText))
         {
-            EncryptedText = Encrypt(InputText);
+            ErrorMessage = "Input text must not be empty.";
+            return;
         }
-    }
 
-    // BUG: No IV, so decryption is impossible.
+        EncryptedText = Encrypt(InputText);
+    }
 
     /// <summary>
     /// Encrypts the given plain text using AES encryption with a randomly generated IV (prepended to encrypted output) and a key derived from PBKDF2.
@@ -41,48 +51,94 @@ public class IndexModel(IConfiguration config, ILogger logger) : PageModel
     /// <returns>The encrypted text.</returns>
     private string Encrypt(string plainText)
     {
-        using var aesAlg = Aes.Create();
         var password = config["Crypto:Key"];
-        if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(config["Crypto:Salt"]) ||
-            string.IsNullOrEmpty(config["Crypto:Iterations"]))
+
+        // 1) Validate password/key
+        if (string.IsNullOrWhiteSpace(password))
         {
-            logger.LogError("password, salt, or iterations in the secrets handling is missing");
-            return "";
+            ErrorMessage = "Encryption key is not configured.";
+            logger.LogError("Crypto:Key is missing or empty");
+            return string.Empty;
+        }
+
+        if (password.Length < MinPasswordLength)
+        {
+            ErrorMessage = $"Encryption key is too short.";
+            logger.LogError("Crypto:Key too short, must be at least {MinPasswordLength} characters long.",
+                MinPasswordLength);
+            return string.Empty;
+        }
+
+        // 2) Validate salt (present, Base64, length)
+        var saltBase64 = config["Crypto:Salt"];
+        if (string.IsNullOrWhiteSpace(saltBase64))
+        {
+            ErrorMessage = "Salt is not configured.";
+            logger.LogError("Crypto:Salt is missing or empty");
+            return string.Empty;
         }
 
         byte[] salt;
-        int iterations;
         try
         {
-            salt = Convert.FromBase64String(config["Crypto:Salt"]!);
+            salt = Convert.FromBase64String(saltBase64);
         }
         catch (FormatException ex)
         {
-            logger.LogError("Invalid Base64 for salt: {ExMessage}", ex.Message);
-            return "";
-        }
-        catch (ArgumentException ex)
-        {
-            logger.LogError("Invalid argument for salt: {ExMessage}", ex.Message);
-            return "";
+            ErrorMessage = "Salt must be possible to decode.";
+            logger.LogError(ex, "Invalid Base64 for salt");
+            return string.Empty;
         }
 
-        try
+        if (salt.Length < MinSaltBytes)
         {
-            iterations = int.Parse(config["Crypto:Iterations"]!);
-        }
-        catch (FormatException ex)
-        {
-            logger.LogError("Invalid number for iterations: {ExMessage}", ex.Message);
-            return "";
-        }
-        catch (ArgumentException ex)
-        {
-            logger.LogError("Invalid argument for iterations: {ExMessage}", ex.Message);
-            return "";
+            ErrorMessage = $"Salt must be at least {MinSaltBytes} bytes.";
+            logger.LogError("Salt length {Length} is below minimum {MinSaltBytes}", salt.Length, MinSaltBytes);
+            return string.Empty;
         }
 
-        var pbkdf2Key = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations, HashAlgorithmName.SHA512, OutputLength);
+        // 3) Validate iterations (positive, within range)
+        var iterationsConfig = config["Crypto:Iterations"];
+        if (string.IsNullOrWhiteSpace(iterationsConfig))
+        {
+            ErrorMessage = "Iteration count is not configured.";
+            logger.LogError("Crypto:Iterations is missing or empty");
+            return string.Empty;
+        }
+
+        if (!int.TryParse(iterationsConfig, out var iterations))
+        {
+            ErrorMessage = "Iteration count must be a valid integer.";
+            logger.LogError("Invalid number for iterations: {IterationsConfig}", iterationsConfig);
+            return string.Empty;
+        }
+
+        switch (iterations)
+        {
+            case <= 0:
+                ErrorMessage = "Iteration count must be a positive number.";
+                logger.LogError("Iterations value {Iterations} is not positive", iterations);
+                return string.Empty;
+            case < MinIterations:
+                ErrorMessage = $"Iteration count must be at least {MinIterations}.";
+                logger.LogWarning("Iterations value {Iterations} below recommended minimum {MinIterations}", iterations,
+                    MinIterations);
+                return string.Empty;
+            case > MaxIterations:
+                ErrorMessage = $"Iteration count must not exceed {MaxIterations}.";
+                logger.LogWarning("Iterations value {Iterations} above maximum {MaxIterations}", iterations,
+                    MaxIterations);
+                return string.Empty;
+        }
+
+        // 4) Derive key and encrypt
+        using var aesAlg = Aes.Create();
+        var pbkdf2Key = Rfc2898DeriveBytes.Pbkdf2(
+            password,
+            salt,
+            iterations,
+            HashAlgorithmName.SHA512,
+            OutputLength);
 
         aesAlg.Key = pbkdf2Key;
 
@@ -95,13 +151,13 @@ public class IndexModel(IConfiguration config, ILogger logger) : PageModel
         using var msEncrypt = new MemoryStream();
         // Prepend IV to the ciphertext (IV is first 16 bytes)
         msEncrypt.Write(iv, 0, iv.Length);
-        using var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write);
+        using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
         using (var swEncrypt = new StreamWriter(csEncrypt))
         {
-            swEncrypt.Write(plainText); // write plaintext to CryptoStream
+            swEncrypt.Write(plainText);
         }
 
-        var encryptedBytes = msEncrypt.ToArray(); // IV + ciphertext
+        var encryptedBytes = msEncrypt.ToArray();
         return Convert.ToBase64String(encryptedBytes);
     }
 }
