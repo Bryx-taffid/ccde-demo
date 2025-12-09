@@ -4,13 +4,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CCDE_Razor_App.Pages;
 
-public class IndexModel : PageModel
+public class IndexModel(IConfiguration config) : PageModel
 {
-    private static readonly byte[] EncryptionKey =
-    [
-        0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-        0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16
-    ];
+    private const int OutputLength = 32;
 
     [BindProperty] public string? InputText { get; set; }
 
@@ -28,10 +24,23 @@ public class IndexModel : PageModel
         }
     }
 
-    private static string Encrypt(string plainText)
+    private string Encrypt(string plainText)
     {
         using var aesAlg = Aes.Create();
-        aesAlg.Key = EncryptionKey;
+        var password = config["Crypto:Key"];
+        if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(config["Crypto:Salt"]) ||
+            string.IsNullOrEmpty(config["Crypto:Iterations"]))
+        {
+            Console.WriteLine("password, salt, or iterations in the secrets handling is missing");
+            return "";
+        }
+
+        var salt = Convert.FromBase64String(config["Crypto:Salt"]!);
+        var iterations = int.Parse(config["Crypto:Iterations"]!);
+
+        var pbkdf2Key = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations, HashAlgorithmName.SHA512, OutputLength);
+
+        aesAlg.Key = pbkdf2Key;
 
         var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 

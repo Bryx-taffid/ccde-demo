@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>CCDE_Razor_App</RootNamespace>
+        <UserSecretsId>9d0c2ce5-0997-4016-977e-408ac35ca482</UserSecretsId>
     </PropertyGroup>
 
 </Project>
