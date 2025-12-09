@@ -35,7 +35,7 @@ public class IndexModel(IConfiguration config) : PageModel
     // BUG: No IV, so decryption is impossible.
 
     /// <summary>
-    /// Encrypts the given plain text using AES encryption with a key derived from PBKDF2.
+    /// Encrypts the given plain text using AES encryption with a random-generated IV (prepended to encrypted output) and a key derived from PBKDF2.
     /// </summary>
     /// <param name="plainText">The text to encrypt.</param>
     /// <returns>The encrypted text.</returns>
@@ -57,16 +57,22 @@ public class IndexModel(IConfiguration config) : PageModel
 
         aesAlg.Key = pbkdf2Key;
 
+        // Generate random, secure 16-byte IV
+        aesAlg.GenerateIV();
+        var iv = aesAlg.IV;
+
         var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
         using var msEncrypt = new MemoryStream();
+        // Prepend IV to the ciphertext (IV is first 16 bytes)
+        msEncrypt.Write(iv, 0, iv.Length);
         using var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write);
         using (var swEncrypt = new StreamWriter(csEncrypt))
         {
-            swEncrypt.Write(plainText);
+            swEncrypt.Write(plainText); // write plaintext to CryptoStream
         }
 
-        var encryptedBytes = msEncrypt.ToArray();
+        var encryptedBytes = msEncrypt.ToArray(); // IV + ciphertext
         return Convert.ToBase64String(encryptedBytes);
     }
 }
