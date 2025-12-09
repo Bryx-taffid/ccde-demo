@@ -22,3 +22,8 @@ By David Bruckmüller
   <img src="./assets/before-encryption-frontend.png" alt="Before Encryption" width="30%" height="50%"> <img src="./assets/after-encryption-frontend.png" alt="After Encryption" width="30%" height="50%">
 
 ---
+
+### Secret Handling
+
+- Vorerst mit .NET Secrets lokal (fürs Development)
+- Anschließend mit Azure Secrets (geeignet für Development und Production)
