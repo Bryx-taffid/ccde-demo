@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CCDE_Razor_App.Pages;
 
-public class IndexModel(IConfiguration config) : PageModel
+public class IndexModel(IConfiguration config, ILogger logger) : PageModel
 {
     // TODO: Apply the best practices and recommendations regarding accessibility
 
@@ -46,12 +46,41 @@ public class IndexModel(IConfiguration config) : PageModel
         if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(config["Crypto:Salt"]) ||
             string.IsNullOrEmpty(config["Crypto:Iterations"]))
         {
-            Console.WriteLine("password, salt, or iterations in the secrets handling is missing");
+            logger.LogError("password, salt, or iterations in the secrets handling is missing");
             return "";
         }
 
-        var salt = Convert.FromBase64String(config["Crypto:Salt"]!);
-        var iterations = int.Parse(config["Crypto:Iterations"]!);
+        byte[] salt;
+        int iterations;
+        try
+        {
+            salt = Convert.FromBase64String(config["Crypto:Salt"]!);
+        }
+        catch (FormatException ex)
+        {
+            logger.LogError("Invalid Base64 for salt: {ExMessage}", ex.Message);
+            return "";
+        }
+        catch (ArgumentException ex)
+        {
+            logger.LogError("Invalid argument for salt: {ExMessage}", ex.Message);
+            return "";
+        }
+
+        try
+        {
+            iterations = int.Parse(config["Crypto:Iterations"]!);
+        }
+        catch (FormatException ex)
+        {
+            logger.LogError("Invalid number for iterations: {ExMessage}", ex.Message);
+            return "";
+        }
+        catch (ArgumentException ex)
+        {
+            logger.LogError("Invalid argument for iterations: {ExMessage}", ex.Message);
+            return "";
+        }
 
         var pbkdf2Key = Rfc2898DeriveBytes.Pbkdf2(password, salt, iterations, HashAlgorithmName.SHA512, OutputLength);
 
