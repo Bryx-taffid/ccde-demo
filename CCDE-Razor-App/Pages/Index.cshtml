@@ -14,15 +14,15 @@
     }
     <form method="post">
         <div>
-            <label for="inputText">Enter Text:</label>
-            <input type="text" id="inputText" name="inputText" required/>
+            <label asp-for="InputText">Enter Text:</label>
+            <input asp-for="InputText" type="text" required/>
         </div>
         <div>
             <button type="submit">Encrypt</button>
         </div>
         <div>
-            <label for="encryptedText">Encrypted Text:</label>
-            <textarea id="encryptedText" name="encryptedText" readonly>@Model.EncryptedText</textarea>
+            <label asp-for="EncryptedText">Encrypted Text:</label>
+            <textarea asp-for="EncryptedText" readonly></textarea>
         </div>
     </form>
 </div>
