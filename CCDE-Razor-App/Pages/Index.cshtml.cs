@@ -4,7 +4,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CCDE_Razor_App.Pages;
 
-public class IndexModel(IConfiguration config, ILogger<IndexModel> logger) : PageModel
+/// <summary>
+/// TODO: comment
+/// </summary>
+/// <param name="logger"></param>
+public class IndexModel(ILogger<IndexModel> logger) : PageModel
 {
     // TODO: Apply the best practices and recommendations regarding accessibility
 
@@ -51,7 +55,10 @@ public class IndexModel(IConfiguration config, ILogger<IndexModel> logger) : Pag
     /// <returns>The encrypted text.</returns>
     private string Encrypt(string plainText)
     {
-        var password = config["Crypto:Key"];
+        var password = SecretHelper.Key;
+        var saltBase64 = SecretHelper.Salt;
+        var iterations = SecretHelper.Iterations;
+
 
         // 1) Validate password/key
         if (string.IsNullOrWhiteSpace(password))
@@ -63,14 +70,13 @@ public class IndexModel(IConfiguration config, ILogger<IndexModel> logger) : Pag
 
         if (password.Length < MinPasswordLength)
         {
-            ErrorMessage = $"Encryption key is too short.";
+            ErrorMessage = "Encryption key is too short.";
             logger.LogError("Crypto:Key too short, must be at least {MinPasswordLength} characters long.",
                 MinPasswordLength);
             return string.Empty;
         }
 
         // 2) Validate salt (present, Base64, length)
-        var saltBase64 = config["Crypto:Salt"];
         if (string.IsNullOrWhiteSpace(saltBase64))
         {
             ErrorMessage = "Salt is not configured.";
@@ -98,21 +104,6 @@ public class IndexModel(IConfiguration config, ILogger<IndexModel> logger) : Pag
         }
 
         // 3) Validate iterations (positive, within range)
-        var iterationsConfig = config["Crypto:Iterations"];
-        if (string.IsNullOrWhiteSpace(iterationsConfig))
-        {
-            ErrorMessage = "Iteration count is not configured.";
-            logger.LogError("Crypto:Iterations is missing or empty");
-            return string.Empty;
-        }
-
-        if (!int.TryParse(iterationsConfig, out var iterations))
-        {
-            ErrorMessage = "Iteration count must be a valid integer.";
-            logger.LogError("Invalid number for iterations: {IterationsConfig}", iterationsConfig);
-            return string.Empty;
-        }
-
         switch (iterations)
         {
             case <= 0:
