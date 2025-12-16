@@ -117,3 +117,5 @@ string GetSecret(SecretTypes secret)
 #endif
     return resultName;
 }
+
+// BUG: CSS for the Web App is missing in Azure / production version
