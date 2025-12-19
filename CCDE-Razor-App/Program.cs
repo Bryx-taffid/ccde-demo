@@ -20,8 +20,6 @@ var iterationName = GetSecret(SecretTypes.Iterations);
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
     EnvironmentName = environment, // important: sets the correct environment (dev/prod) based on the run profile
-    ContentRootPath = AppContext.BaseDirectory,
-    WebRootPath = AppContext.BaseDirectory,
     Args = args
 });
 
