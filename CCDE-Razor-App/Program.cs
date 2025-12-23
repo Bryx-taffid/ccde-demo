@@ -1,6 +1,3 @@
-#if DEBUG
-using System.Text;
-#endif
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using CCDE_Razor_App;
@@ -16,7 +13,6 @@ var keyName = GetSecret(SecretTypes.Key);
 var saltName = GetSecret(SecretTypes.Salt);
 var iterationName = GetSecret(SecretTypes.Iterations);
 
-
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
     EnvironmentName = environment, // important: sets the correct environment (dev/prod) based on the run profile
@@ -28,7 +24,7 @@ if (builder.Environment.IsProduction())
     var keyVaultUrl = Environment.GetEnvironmentVariable("VAULT_URL");
     if (string.IsNullOrWhiteSpace(keyVaultUrl))
     {
-        throw new Exception("KeyVault URL is missing");
+        throw new Exception("Environment variable 'VAULT_URL' is not configured.");
     }
 
     var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
@@ -42,15 +38,20 @@ if (builder.Environment.IsProduction())
     var result = int.TryParse(iterationSecret.Value.Value, out var iterations);
     ValidateIntConversion(result, iterations);
 }
+
 else
 {
     // get the secrets from .NET secrets
     SecretHelper.Key = builder.Configuration[keyName];
     SecretHelper.Salt = builder.Configuration[saltName];
+    if (string.IsNullOrWhiteSpace(SecretHelper.Key) || string.IsNullOrWhiteSpace(SecretHelper.Salt))
+    {
+        throw new Exception("Could not fetch secrets from .NET User secrets");
+    }
+
     var result = int.TryParse(builder.Configuration[iterationName], out var iterations);
     ValidateIntConversion(result, iterations);
 }
-// TODO: get the secret for development from .NET user secrets
 
 
 // Add services to the container.
@@ -85,35 +86,22 @@ void ValidateIntConversion(bool result, int iterations)
     if (result)
         SecretHelper.Iterations = iterations;
     else
-        throw new Exception("Iterations not found");
+        throw new Exception("Iterations must be a valid integer");
 }
 
 string GetSecret(SecretTypes secret)
 {
-    string secretName;
-    switch (secret)
+    var secretName = secret switch
     {
-        case SecretTypes.Key:
-            secretName = "Key";
-            break;
-        case SecretTypes.Salt:
-            secretName = "Salt";
-            break;
-        case SecretTypes.Iterations:
-            secretName = "Iterations";
-            break;
-        default:
-            return "";
-    }
+        SecretTypes.Key => "Key",
+        SecretTypes.Salt => "Salt",
+        SecretTypes.Iterations => "Iterations",
+        _ => throw new ArgumentOutOfRangeException(nameof(secret), secret, "This secret type is not supported.")
+    };
 
 #if DEBUG
-    var sb = new StringBuilder("Crypto:");
-    sb.Append(secretName);
-    var resultName = sb.ToString();
+    return $"Crypto:{secretName}";
 #else
-    var resultName = secretName;
+    return secretName;
 #endif
-    return resultName;
 }
-
-// BUG: CSS for the Web App is missing in Azure / production version

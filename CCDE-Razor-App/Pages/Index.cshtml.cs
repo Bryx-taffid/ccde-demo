@@ -5,12 +5,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace CCDE_Razor_App.Pages;
 
 /// <summary>
-/// TODO: comment
+/// The Index page model for encrypting input text.
 /// </summary>
-/// <param name="logger"></param>
+/// <param name="logger">The logger to use.</param>
 public class IndexModel(ILogger<IndexModel> logger) : PageModel
 {
-    // TODO: Apply the best practices and recommendations regarding accessibility
 
     private const int OutputLength = 32; // 256 bits
     private const int MinSaltBytes = 16;
