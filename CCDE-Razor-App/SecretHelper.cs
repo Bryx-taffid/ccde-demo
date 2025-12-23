@@ -5,7 +5,61 @@
 /// </summary>
 internal static class SecretHelper
 {
-    internal static string? Key { get; set; }
-    internal static string? Salt { get; set; }
-    internal static int Iterations { get; set; }
+    // Note: Uses lock to ensure thread-safety for static properties
+    // This is done based on the recommendations from the code review
+    private static readonly Lock SyncRoot = new();
+
+    internal static string? Key
+    {
+        get
+        {
+            lock (SyncRoot)
+            {
+                return field;
+            }
+        }
+        set
+        {
+            lock (SyncRoot)
+            {
+                field = value;
+            }
+        }
+    }
+
+    internal static string? Salt
+    {
+        get
+        {
+            lock (SyncRoot)
+            {
+                return field;
+            }
+        }
+        set
+        {
+            lock (SyncRoot)
+            {
+                field = value;
+            }
+        }
+    }
+
+    internal static int Iterations
+    {
+        get
+        {
+            lock (SyncRoot)
+            {
+                return field;
+            }
+        }
+        set
+        {
+            lock (SyncRoot)
+            {
+                field = value;
+            }
+        }
+    }
 }

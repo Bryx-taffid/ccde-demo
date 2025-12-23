@@ -1,7 +1,7 @@
 ﻿namespace CCDE_Razor_App;
 
 /// <summary>
-/// TODO: comment
+/// Represents the types of secrets used for encryption operations.
 /// </summary>
 public enum SecretTypes
 {
