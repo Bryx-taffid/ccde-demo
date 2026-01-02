@@ -4,15 +4,16 @@
     ViewData["Title"] = "Secure Notes";
 }
 
-@* TODO: Apply the best practices and recommendations regarding accessibility *@
-
 <div>
     <h1>Secure Notes</h1>
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
         <div class="text-danger">@Model.ErrorMessage</div>
     }
-    <form method="post">
+
+
+    <h2>Encryption</h2>
+    <form method="post" asp-page-handler="Encrypt">
         <div>
             <label asp-for="InputText">Enter Text:</label>
             <input asp-for="InputText" type="text" required/>
@@ -23,6 +24,23 @@
         <div>
             <label asp-for="EncryptedText">Encrypted Text:</label>
             <textarea asp-for="EncryptedText" readonly></textarea>
+        </div>
+    </form>
+
+    <hr/>
+
+    <h2>Decryption</h2>
+    <form method="post" asp-page-handler="Decrypt">
+        <div>
+            <label asp-for="EncryptedInputText">Enter Encrypted Text:</label>
+            <textarea asp-for="EncryptedInputText" required></textarea>
+        </div>
+        <div>
+            <button type="submit">Decrypt</button>
+        </div>
+        <div>
+            <label asp-for="DecryptedText">Decrypted Text:</label>
+            <input asp-for="DecryptedText" type="text" readonly/>
         </div>
     </form>
 </div>
