@@ -1,6 +1,7 @@
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using CCDE_Razor_App;
+using CCDE_Razor_App.Services;
 
 var environment =
 #if DEBUG
@@ -53,9 +54,21 @@ else
     ValidateIntConversion(result, iterations);
 }
 
-
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+
+// Inject CryptoService into the Index Model
+builder.Services.AddSingleton<ICryptoService>(serviceProvider =>
+{
+    var logger = serviceProvider.GetRequiredService<ILogger<CryptoService>>();
+    return new CryptoService(
+        SecretHelper.Key ?? throw new InvalidOperationException("Key not configured"),
+        SecretHelper.Salt ?? throw new InvalidOperationException("Salt not configured"),
+        SecretHelper.Iterations,
+        logger);
+});
+
 
 var app = builder.Build();
 
