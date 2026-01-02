@@ -74,6 +74,82 @@ public class IndexModel(ILogger<IndexModel> logger) : PageModel
     }
 
     /// <summary>
+    /// Validates the cryptographic parameters (password, salt, iterations).
+    /// </summary>
+    /// <param name="password">The password/key to validate.</param>
+    /// <param name="saltBase64">The Base64-encoded salt to validate.</param>
+    /// <param name="iterations">The iteration count to validate.</param>
+    /// <param name="salt">Output parameter for the decoded salt bytes.</param>
+    /// <returns>True if all parameters are valid; otherwise false. Sets ErrorMessage on failure.</returns>
+    private bool ValidateCryptoParameters(string? password, string? saltBase64, int iterations, out byte[] salt)
+    {
+        salt = [];
+
+        // Validate password/key
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            ErrorMessage = "Encryption/Decryption key is not configured.";
+            logger.LogError("Crypto:Key is missing or empty");
+            return false;
+        }
+
+        if (password.Length < MinPasswordLength)
+        {
+            ErrorMessage = "Encryption/Decryption key is too short.";
+            logger.LogError("Crypto:Key too short, must be at least {MinPasswordLength} characters long.",
+                MinPasswordLength);
+            return false;
+        }
+
+        // Validate salt (present, Base64, length)
+        if (string.IsNullOrWhiteSpace(saltBase64))
+        {
+            ErrorMessage = "Salt is not configured.";
+            logger.LogError("Crypto:Salt is missing or empty");
+            return false;
+        }
+
+        try
+        {
+            salt = Convert.FromBase64String(saltBase64);
+        }
+        catch (FormatException ex)
+        {
+            ErrorMessage = "Salt must be possible to decode.";
+            logger.LogError(ex, "Invalid Base64 for salt");
+            return false;
+        }
+
+        if (salt.Length < MinSaltBytes)
+        {
+            ErrorMessage = $"Salt must be at least {MinSaltBytes} bytes.";
+            logger.LogError("Salt length {Length} is below minimum {MinSaltBytes}", salt.Length, MinSaltBytes);
+            return false;
+        }
+
+        // 3) Validate iterations (positive, within range)
+        switch (iterations)
+        {
+            case <= 0:
+                ErrorMessage = "Iteration count must be a positive number.";
+                logger.LogError("Iterations value {Iterations} is not positive", iterations);
+                return false;
+            case < MinIterations:
+                ErrorMessage = $"Iteration count must be at least {MinIterations}.";
+                logger.LogWarning("Iterations value {Iterations} below recommended minimum {MinIterations}", iterations,
+                    MinIterations);
+                return false;
+            case > MaxIterations:
+                ErrorMessage = $"Iteration count must not exceed {MaxIterations}.";
+                logger.LogWarning("Iterations value {Iterations} above maximum {MaxIterations}", iterations,
+                    MaxIterations);
+                return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
     /// Encrypts the given plain text using AES encryption with a randomly generated IV (prepended to encrypted output) and a key derived from PBKDF2.
     /// </summary>
     /// <param name="plainText">The text to encrypt.</param>
@@ -84,73 +160,16 @@ public class IndexModel(ILogger<IndexModel> logger) : PageModel
         var saltBase64 = SecretHelper.Salt;
         var iterations = SecretHelper.Iterations;
 
-
-        // 1) Validate password/key
-        if (string.IsNullOrWhiteSpace(password))
+        // Validate cryptographic parameters
+        if (!ValidateCryptoParameters(password, saltBase64, iterations, out var salt))
         {
-            ErrorMessage = "Encryption key is not configured.";
-            logger.LogError("Crypto:Key is missing or empty");
             return string.Empty;
         }
 
-        if (password.Length < MinPasswordLength)
-        {
-            ErrorMessage = "Encryption key is too short.";
-            logger.LogError("Crypto:Key too short, must be at least {MinPasswordLength} characters long.",
-                MinPasswordLength);
-            return string.Empty;
-        }
-
-        // 2) Validate salt (present, Base64, length)
-        if (string.IsNullOrWhiteSpace(saltBase64))
-        {
-            ErrorMessage = "Salt is not configured.";
-            logger.LogError("Crypto:Salt is missing or empty");
-            return string.Empty;
-        }
-
-        byte[] salt;
-        try
-        {
-            salt = Convert.FromBase64String(saltBase64);
-        }
-        catch (FormatException ex)
-        {
-            ErrorMessage = "Salt must be possible to decode.";
-            logger.LogError(ex, "Invalid Base64 for salt");
-            return string.Empty;
-        }
-
-        if (salt.Length < MinSaltBytes)
-        {
-            ErrorMessage = $"Salt must be at least {MinSaltBytes} bytes.";
-            logger.LogError("Salt length {Length} is below minimum {MinSaltBytes}", salt.Length, MinSaltBytes);
-            return string.Empty;
-        }
-
-        // 3) Validate iterations (positive, within range)
-        switch (iterations)
-        {
-            case <= 0:
-                ErrorMessage = "Iteration count must be a positive number.";
-                logger.LogError("Iterations value {Iterations} is not positive", iterations);
-                return string.Empty;
-            case < MinIterations:
-                ErrorMessage = $"Iteration count must be at least {MinIterations}.";
-                logger.LogWarning("Iterations value {Iterations} below recommended minimum {MinIterations}", iterations,
-                    MinIterations);
-                return string.Empty;
-            case > MaxIterations:
-                ErrorMessage = $"Iteration count must not exceed {MaxIterations}.";
-                logger.LogWarning("Iterations value {Iterations} above maximum {MaxIterations}", iterations,
-                    MaxIterations);
-                return string.Empty;
-        }
-
-        // 4) Derive key and encrypt
+        // Derive key and encrypt
         using var aesAlg = Aes.Create();
         var pbkdf2Key = Rfc2898DeriveBytes.Pbkdf2(
-            password,
+            password!,
             salt,
             iterations,
             HashAlgorithmName.SHA512,
@@ -188,66 +207,10 @@ public class IndexModel(ILogger<IndexModel> logger) : PageModel
         var saltBase64 = SecretHelper.Salt;
         var iterations = SecretHelper.Iterations;
 
-        // Validate password/key
-        if (string.IsNullOrWhiteSpace(password))
+        // Validate cryptographic parameters
+        if (!ValidateCryptoParameters(password, saltBase64, iterations, out var salt))
         {
-            ErrorMessage = "Decryption key is not configured.";
-            logger.LogError("Crypto:Key is missing or empty");
             return string.Empty;
-        }
-
-        if (password.Length < MinPasswordLength)
-        {
-            ErrorMessage = "Decryption key is too short.";
-            logger.LogError("Crypto:Key too short, must be at least {MinPasswordLength} characters long.",
-                MinPasswordLength);
-            return string.Empty;
-        }
-
-        // Validate salt (present, Base64, length)
-        if (string.IsNullOrWhiteSpace(saltBase64))
-        {
-            ErrorMessage = "Salt is not configured.";
-            logger.LogError("Crypto:Salt is missing or empty");
-            return string.Empty;
-        }
-
-        byte[] salt;
-        try
-        {
-            salt = Convert.FromBase64String(saltBase64);
-        }
-        catch (FormatException ex)
-        {
-            ErrorMessage = "Salt must be possible to decode.";
-            logger.LogError(ex, "Invalid Base64 for salt");
-            return string.Empty;
-        }
-
-        if (salt.Length < MinSaltBytes)
-        {
-            ErrorMessage = $"Salt must be at least {MinSaltBytes} bytes.";
-            logger.LogError("Salt length {Length} is below minimum {MinSaltBytes}", salt.Length, MinSaltBytes);
-            return string.Empty;
-        }
-
-        // Validate iterations (positive, within range)
-        switch (iterations)
-        {
-            case <= 0:
-                ErrorMessage = "Iteration count must be a positive number.";
-                logger.LogError("Iterations value {Iterations} is not positive", iterations);
-                return string.Empty;
-            case < MinIterations:
-                ErrorMessage = $"Iteration count must be at least {MinIterations}.";
-                logger.LogWarning("Iterations value {Iterations} below recommended minimum {MinIterations}", iterations,
-                    MinIterations);
-                return string.Empty;
-            case > MaxIterations:
-                ErrorMessage = $"Iteration count must not exceed {MaxIterations}.";
-                logger.LogWarning("Iterations value {Iterations} above maximum {MaxIterations}", iterations,
-                    MaxIterations);
-                return string.Empty;
         }
 
         // Decode Base64 encrypted data
@@ -283,7 +246,7 @@ public class IndexModel(ILogger<IndexModel> logger) : PageModel
         // Derive key using same parameters as encryption
         using var aesAlg = Aes.Create();
         var pbkdf2Key = Rfc2898DeriveBytes.Pbkdf2(
-            password,
+            password!,
             salt,
             iterations,
             HashAlgorithmName.SHA512,
