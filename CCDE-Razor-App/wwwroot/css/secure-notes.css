@@ -375,6 +375,22 @@ body {
     }
 }
 
+/* Make navbar sticky at the top */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: var(--bg-primary);
+}
+
+/* Ensure navbar has solid background */
+.navbar {
+    background-color: var(--bg-primary) !important;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Dark mode stuff: */
+
 /* Fix navbar in dark mode */
 @media (prefers-color-scheme: dark) {
     .navbar-light {
@@ -398,10 +414,8 @@ body {
     .navbar-toggler-icon {
         filter: invert(1);
     }
-}
 
-/* Fix footer in dark mode */
-@media (prefers-color-scheme: dark) {
+    /* Fix footer in dark mode */
     .footer {
         color: var(--text-secondary) !important;
         border-top-color: var(--border-color) !important;
@@ -414,10 +428,7 @@ body {
     .footer a:hover {
         color: var(--color-primary) !important;
     }
-}
 
-
-@media (prefers-color-scheme: dark) {
     /* Override Bootstrap and browser defaults for inputs and textareas */
     .form-control,
     input.form-control,
@@ -455,24 +466,8 @@ body {
         color: var(--input-text) !important;
         border-color: var(--border-color) !important;
     }
-}
 
-/* Make navbar sticky at the top */
-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: var(--bg-primary);
-}
-
-/* Ensure navbar has solid background */
-.navbar {
-    background-color: var(--bg-primary) !important;
-    box-shadow: var(--shadow-sm);
-}
-
-/* Dark mode navbar background */
-@media (prefers-color-scheme: dark) {
+    /* Dark mode navbar background */
     header {
         background-color: var(--bg-card);
     }
