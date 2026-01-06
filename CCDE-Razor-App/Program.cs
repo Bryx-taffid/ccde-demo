@@ -69,7 +69,6 @@ builder.Services.AddSingleton<ICryptoService>(serviceProvider =>
         logger);
 });
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
