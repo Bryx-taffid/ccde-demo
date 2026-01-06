@@ -1,5 +1,7 @@
 # Secure Notes
 
+[![.NET Build and Test](https://github.com/Bryx-taffid/ccde-demo/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Bryx-taffid/ccde-demo/actions/workflows/ci.yml)
+
 ## Disclaimer
 
 This project is only developed for educational purposes, and therefore won't be actively maintained after fulfilling the educational purpose.
@@ -19,4 +21,5 @@ The goal of this project is to demonstrate CI/CD and secret handling for educati
 This project is private and intended for use by the owner, their teacher, and friends only. Access to this repository is granted solely at the discretion of the owner. Any use, distribution, or reproduction of the code and documentation without explicit permission from the owner is prohibited.
 
 For any inquiries regarding access or usage, please contact the owner directly.
+
 
