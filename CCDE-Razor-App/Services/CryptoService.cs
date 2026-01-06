@@ -57,13 +57,14 @@ public class CryptoService : ICryptoService
         if (_salt.Length < MinSaltBytes)
             throw new ArgumentException($"Salt must be at least {MinSaltBytes} bytes.", nameof(saltBase64));
 
+        // Validate and set iterations
         switch (iterations)
         {
-            // Validate and set iterations
             case <= 0:
                 throw new ArgumentException("Iterations must be a positive number.", nameof(iterations));
             case < MinIterations:
-                _logger?.LogWarning("Iterations value {Iterations} below recommended minimum {MinIterations}", iterations,
+                _logger?.LogWarning("Iterations value {Iterations} below recommended minimum {MinIterations}",
+                    iterations,
                     MinIterations);
                 break;
             case > MaxIterations:
@@ -109,6 +110,8 @@ public class CryptoService : ICryptoService
 
             var encryptedBytes = msEncrypt.ToArray();
             var encryptedText = Convert.ToBase64String(encryptedBytes);
+
+            CryptographicOperations.ZeroMemory(pbkdf2Key);
 
             return new CryptoResult(true, encryptedText, null);
         }
@@ -172,6 +175,8 @@ public class CryptoService : ICryptoService
             using var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
             using var srDecrypt = new StreamReader(csDecrypt);
             var decryptedText = srDecrypt.ReadToEnd();
+
+            CryptographicOperations.ZeroMemory(pbkdf2Key);
 
             return new CryptoResult(true, decryptedText, null);
         }
