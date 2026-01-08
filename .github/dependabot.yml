@@ -10,6 +10,7 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+      day: "wednesday"
 
     # Enable version updates for the NuGet packages (in .NET). Those are checked daily to fix security flaws in the app itself faster
   - package-ecosystem: "nuget"
