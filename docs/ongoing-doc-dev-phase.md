@@ -40,6 +40,12 @@ By David Bruckmüller
 
 ---
 
+## Architektur
+
+![h:500](assets/Architektur.png)
+
+---
+
 ## Probleme
 
 Probleme mit Azure Secrets =>
