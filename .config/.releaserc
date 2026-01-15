@@ -6,19 +6,19 @@
     [
       "@semantic-release/commit-analyzer",
       {
-        "preset": "angular"
-      }
-    ],
-    [
-      "@semantic-release/release-notes-generator",
-      {
         "preset": "angular",
         "releaseRules": [
           {
             "type": "build",
             "release": "patch"
           }
-        ],
+        ]
+      }
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        "preset": "angular",
         "writerOpts": {
           "commitsSort": [
             "subject",
