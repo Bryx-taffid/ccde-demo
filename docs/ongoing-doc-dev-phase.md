@@ -34,15 +34,25 @@ By David Bruckmüller
 - Bereitstellung in der Cloud als Azure Web App
 - Development-Secrets mit .NET Secrets
 - Production Secrets mit Azure Key Vault
+
+---
+
+## Technologien
+
 - Codeverwaltung auf GitHub
-- CI/CD mit GitHub Actions
-- Automatische Dependency-Updates mit Dependabot
+- GitHub Actions - CI/CD:
+  - Automatische Deployments zu Azure
+  - Automatische Releases auf GitHub
+  - Automatische Dependency-Updates mit Dependabot
 
 ---
 
 ## Architektur
 
-![h:500](assets/Architektur.png)
+Original h:500
+![h:250](assets/Architektur.png)
+
+**Es fehlt: GH Release**
 
 ---
 
@@ -50,3 +60,6 @@ By David Bruckmüller
 
 Probleme mit Azure Secrets =>
 falsche Benennung (Großbuchstaben)
+
+Probleme beim Aufsetzen der GitHub Release Action =>
+unklare Dokumentation, fehlerhafte Guides im Internet
