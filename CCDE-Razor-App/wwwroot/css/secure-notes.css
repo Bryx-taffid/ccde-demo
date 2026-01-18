@@ -83,6 +83,8 @@ body {
 .page-header {
     text-align: center;
     margin-bottom: var(--space-xl);
+    /* Ensure that page header has no background */
+    background-color: transparent;
 }
 
 .page-header h1 {
@@ -223,10 +225,10 @@ body {
 /* Result Fields */
 .result-group {
     margin-top: var(--space-sm);
-    animation: slideIn 0.3s ease-out;
+    animation: slide-in 0.3s ease-out;
 }
 
-@keyframes slideIn {
+@keyframes slide-in {
     from {
         opacity: 0;
         transform: translateY(-10px);
@@ -482,8 +484,7 @@ header {
 main,
 .secure-notes-container,
 .page-header,
-.crypto-grid,
-.crypto-card {
+.crypto-grid {
     position: static;
     z-index: auto;
 }
@@ -491,9 +492,4 @@ main,
 /* Remove white background from Bootstrap container */
 .container {
     background-color: transparent !important;
-}
-
-/* Ensure page header has no background */
-.page-header {
-    background-color: transparent;
 }
