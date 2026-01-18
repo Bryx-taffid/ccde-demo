@@ -7,12 +7,12 @@ on:
   pull_request:
     branches: [ "main" ]
 
-permissions: {}
-
 jobs:
   build:
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # needed for reading the contents of the repository
     steps:
     - uses: actions/checkout@v6
     - name: Setup .NET
