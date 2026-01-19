@@ -28,6 +28,6 @@ jobs:
       - name: Output new release version
         if: steps.semantic.outputs.new_release_published == 'true'
         run: |
-          echo ${STEPS_SEMANTIC_OUTPUTS_NEW_RELEASE_VERSION}
+          echo "${STEPS_SEMANTIC_OUTPUTS_NEW_RELEASE_VERSION}"
         env:
-          STEPS_SEMANTIC_OUTPUTS_NEW_RELEASE_VERSION: ${{ steps.semantic.outputs.new_release_version }}
+          STEPS_SEMANTIC_OUTPUTS_NEW_RELEASE_VERSION: "${{ steps.semantic.outputs.new_release_version }}"
