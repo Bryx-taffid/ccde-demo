@@ -1,7 +1,5 @@
 {
-  "branches": [
-    "main"
-  ],
+  "branches": ["main"],
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
@@ -14,10 +12,7 @@
       {
         "preset": "angular",
         "writerOpts": {
-          "commitsSort": [
-            "subject",
-            "scope"
-          ]
+          "commitsSort": ["subject", "scope"]
         }
       }
     ],
