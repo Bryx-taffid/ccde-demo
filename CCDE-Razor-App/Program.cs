@@ -24,9 +24,7 @@ if (builder.Environment.IsProduction())
 {
     var keyVaultUrl = Environment.GetEnvironmentVariable("VAULT_URL");
     if (string.IsNullOrWhiteSpace(keyVaultUrl))
-    {
         throw new Exception("Environment variable 'VAULT_URL' is not configured.");
-    }
 
     var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
 
@@ -46,9 +44,7 @@ else
     SecretHelper.Key = builder.Configuration[keyName];
     SecretHelper.Salt = builder.Configuration[saltName];
     if (string.IsNullOrWhiteSpace(SecretHelper.Key) || string.IsNullOrWhiteSpace(SecretHelper.Salt))
-    {
         throw new Exception("Could not fetch secrets from .NET User secrets");
-    }
 
     var result = int.TryParse(builder.Configuration[iterationName], out var iterations);
     ValidateIntConversion(result, iterations);
