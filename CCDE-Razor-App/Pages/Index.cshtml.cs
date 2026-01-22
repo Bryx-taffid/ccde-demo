@@ -59,13 +59,9 @@ public class IndexModel : PageModel
 
         var result = _cryptoService.Encrypt(InputText);
         if (result.Success)
-        {
             EncryptedText = result.Value;
-        }
         else
-        {
             ErrorMessage = result.ErrorMessage;
-        }
     }
 
     /// <summary>
@@ -81,12 +77,8 @@ public class IndexModel : PageModel
 
         var result = _cryptoService.Decrypt(EncryptedInputText);
         if (result.Success)
-        {
             DecryptedText = result.Value;
-        }
         else
-        {
             ErrorMessage = result.ErrorMessage;
-        }
     }
 }
