@@ -37,7 +37,7 @@ By David Bruckmüller
 
 ---
 
-## Technologien - Fortsetzung
+## CI / CD
 
 - Codeverwaltung auf GitHub
 - GitHub Actions - CI/CD:
@@ -49,10 +49,7 @@ By David Bruckmüller
 
 ## Architektur
 
-Original h:500
-![h:250](assets/Architektur.png)
-
-**Es fehlt: GH Release**
+![h:500](assets/Architektur.png)
 
 ---
 
@@ -63,3 +60,7 @@ falsche Benennung (Großbuchstaben)
 
 Probleme beim Aufsetzen der GitHub Release Action =>
 unklare Dokumentation, fehlerhafte Guides im Internet
+
+---
+
+# Quellen TODO
