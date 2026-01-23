@@ -4,6 +4,10 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 
+## custom stuff due to binary doc files
+*doc*.pdf
+*doc*.html
+
 # .gitignore templates from https://github.com/github/gitignore
 
 ## A streamlined .gitignore for modern .NET projects

@@ -15,15 +15,52 @@ By David Bruckmüller
 
 ## Applikation
 
-### Logik und Frontend
+### Ziel und Funktionen
 
-- Razor Pages
-- Text wird mit AES verschlüsselt
-  <img src="./assets/before-encryption-frontend.png" alt="Before Encryption" width="30%" height="50%"> <img src="./assets/after-encryption-frontend.png" alt="After Encryption" width="30%" height="50%">
+- Secure Notes App, wo Text ver- und entschlüsselt werden kann
+- Modernes Design mit White/Dark-Mode
 
 ---
 
-### Secret Handling
+### Screenshots
 
-- Vorerst mit .NET Secrets lokal (fürs Development)
-- Anschließend mit Azure Secrets (geeignet für Development und Production)
+**TODO**
+
+---
+
+## Technologien
+
+- .NET Razor Pages für die Web App selbst
+- Bereitstellung in der Cloud als Azure Web App
+- Development-Secrets mit .NET Secrets
+- Production Secrets mit Azure Key Vault
+
+---
+
+## CI / CD
+
+- Codeverwaltung auf GitHub
+- GitHub Actions - CI/CD:
+  - Automatische Deployments zu Azure
+  - Automatische Releases auf GitHub
+  - Automatische Dependency-Updates mit Dependabot
+
+---
+
+## Architektur
+
+![h:500](assets/Architektur.png)
+
+---
+
+## Probleme
+
+Probleme mit Azure Secrets =>
+falsche Benennung (Großbuchstaben)
+
+Probleme beim Aufsetzen der GitHub Release Action =>
+unklare Dokumentation, fehlerhafte Guides im Internet
+
+---
+
+## Quellen TODO
