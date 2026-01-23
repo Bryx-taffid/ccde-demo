@@ -37,7 +37,7 @@ By David Bruckmüller
 
 ---
 
-## Technologien
+## Technologien - Fortsetzung
 
 - Codeverwaltung auf GitHub
 - GitHub Actions - CI/CD:
