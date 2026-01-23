@@ -78,4 +78,4 @@ unklare Dokumentation, fehlerhafte Guides im Internet
 ## Links für mein Projekt
 
 - [Azure Web App](https://secure-notes-ccde-bkaedpeghqeaaqh6.polandcentral-01.azurewebsites.net/)
-- [Github-Repo](https://github.com/Bryx-taffid/ccde-demo)
+- [GitHub Repo](https://github.com/Bryx-taffid/ccde-demo)
