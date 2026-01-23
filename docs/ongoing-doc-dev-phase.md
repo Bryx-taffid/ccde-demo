@@ -24,7 +24,7 @@ By David Bruckmüller
 
 ### Screenshots
 
-**TODO**
+![Screenshot der Applikation, ein Text wurde ins Eingabefeld zum Verschlüsseln eingetippt, man sieht das verschlüsselte Ergebnis sowie den Button 'Copy' h:500](assets/Screenshot%201.png)
 
 ---
 
@@ -49,7 +49,7 @@ By David Bruckmüller
 
 ## Architektur
 
-![h:500](assets/Architektur.png)
+![Architektur der App und des Ökosystems h:500](assets/Architektur.png)
 
 ---
 
@@ -63,4 +63,20 @@ unklare Dokumentation, fehlerhafte Guides im Internet
 
 ---
 
-## Quellen TODO
+## Quellen
+
+- [Marp - Markdown Presentation Framework](https://marp.app/)
+- [Microsoft .NET](https://dotnet.microsoft.com/en-us/)
+- [Microsoft Azure](https://azure.microsoft.com/)
+- [GitHub](https://github.com/)
+  - [Super Linter](https://github.com/super-linter/super-linter)
+  - [git-auto-commit Action](https://github.com/stefanzweifel/git-auto-commit-action)
+  - [Semantic Release Action
+    ](https://github.com/cycjimmy/semantic-release-action)
+
+---
+
+## Links für mein Projekt
+
+- [Azure Web App](https://secure-notes-ccde-bkaedpeghqeaaqh6.polandcentral-01.azurewebsites.net/)
+- [Github-Repo](https://github.com/Bryx-taffid/ccde-demo)
