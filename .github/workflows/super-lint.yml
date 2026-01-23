@@ -45,6 +45,7 @@ jobs:
           VALIDATE_BIOME_LINT: false
           VALIDATE_CHECKOV: false
           VALIDATE_JSCPD: false
+          VALIDATE_NATURAL_LANGUAGE: false
           # Disable checking in unwanted / preconfigured directories
           IGNORE_GENERATED_FILES: true
           FILTER_REGEX_EXCLUDE: (^|.*/)(Shared)(/.*)?$|(^|.*/)(lib)(/.*)?$|(^|.*/)\.idea(/.*)?$|(^|.*/)_([^/]+)$ # exclude all folders with names Shared, .idea or lib as well as files starting with _
