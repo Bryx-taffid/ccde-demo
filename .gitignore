@@ -496,3 +496,13 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+
+#####################################
+
+# Super-linter outputs
+super-linter-output
+super-linter.log
+
+# GitHub Actions leftovers
+github_conf

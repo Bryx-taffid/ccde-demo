@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="CCDE-Razor-App.Tests/CCDE-Razor-App.Tests.csproj" />
-  <Project Path="CCDE-Razor-App/CCDE-Razor-App.csproj" />
+    <Project Path="CCDE-Razor-App.Tests/CCDE-Razor-App.Tests.csproj"/>
+    <Project Path="CCDE-Razor-App/CCDE-Razor-App.csproj"/>
 </Solution>

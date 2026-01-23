@@ -1,6 +1,7 @@
 # Secure Notes
 
 [![.NET Build and Test](https://github.com/Bryx-taffid/ccde-demo/actions/workflows/dotnet-build-test.yml/badge.svg)](https://github.com/Bryx-taffid/ccde-demo/actions/workflows/dotnet-build-test.yml)
+[![Linting and formatting](https://github.com/Bryx-taffid/ccde-demo/actions/workflows/super-lint.yml/badge.svg)](https://github.com/Bryx-taffid/ccde-demo/actions/workflows/super-lint.yml)
 [![Deploy to Azure Web App](https://github.com/Bryx-taffid/ccde-demo/actions/workflows/deploy-azure-webapp.yml/badge.svg)](https://github.com/Bryx-taffid/ccde-demo/actions/workflows/deploy-azure-webapp.yml)
 [![Release to GitHub](https://github.com/Bryx-taffid/ccde-demo/actions/workflows/github-release.yml/badge.svg)](https://github.com/Bryx-taffid/ccde-demo/actions/workflows/github-release.yml)
 
@@ -23,8 +24,3 @@ The goal of this project is to demonstrate CI/CD and secret handling for educati
 This project is private and intended for use by the owner, their teacher, and friends only. Access to this repository is granted solely at the discretion of the owner. Any use, distribution, or reproduction of the code and documentation without explicit permission from the owner is prohibited.
 
 For any inquiries regarding access or usage, please contact the owner directly.
-
-
-
-
-

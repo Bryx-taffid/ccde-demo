@@ -5,18 +5,22 @@
 
 version: 2
 updates:
-    # Enable version updates for the .NET SDK
+  # Enable version updates for the .NET SDK
   - package-ecosystem: "dotnet-sdk" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
       day: "wednesday"
+    cooldown:
+      default-days: 7
 
     # Enable version updates for the NuGet packages (in .NET). Those are checked daily to fix security flaws in the app itself faster
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 7
 
     # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
@@ -25,3 +29,5 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
