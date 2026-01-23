@@ -71,8 +71,7 @@ unklare Dokumentation, fehlerhafte Guides im Internet
 - [GitHub](https://github.com/)
   - [Super Linter](https://github.com/super-linter/super-linter)
   - [git-auto-commit Action](https://github.com/stefanzweifel/git-auto-commit-action)
-  - [Semantic Release Action
-    ](https://github.com/cycjimmy/semantic-release-action)
+  - [Semantic Release Action](https://github.com/cycjimmy/semantic-release-action)
 
 ---
 
