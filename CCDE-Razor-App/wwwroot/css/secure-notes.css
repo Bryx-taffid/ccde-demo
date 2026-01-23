@@ -499,3 +499,31 @@ main,
 .container {
   background-color: transparent !important;
 }
+
+/* Styling for the new copy buttons */
+.btn-copy {
+  margin-top: 0.5rem;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.btn-copy:hover {
+  background: #e5e7eb;
+}
+
+.btn-copy:active {
+  background: #d1d5db;
+}
+
+.btn-copy .btn-icon {
+  width: 1rem;
+  height: 1rem;
+}
