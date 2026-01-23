@@ -50,8 +50,6 @@ jobs:
           FILTER_REGEX_EXCLUDE: (^|.*/)(Shared)(/.*)?$|(^|.*/)(lib)(/.*)?$|(^|.*/)\.idea(/.*)?$|(^|.*/)_([^/]+)$ # exclude all folders with names Shared, .idea or lib as well as files starting with _
           # auto-fix the following checkers
           FIX_YAML_PRETTIER: true
-          FIX_NATURAL_LANGUAGE: true
-          FIX_MARKDOWN_PRETTIER: true
           FIX_JSON_PRETTIER: true
           FIX_JAVASCRIPT_PRETTIER: true
           FIX_JAVASCRIPT_ES: true
