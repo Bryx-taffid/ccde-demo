@@ -62,4 +62,4 @@ Probleme mit Azure Secrets =>
 falsche Benennung (Großbuchstaben)
 
 Probleme beim Aufsetzen der GitHub Release Action =>
-unklare Dokumentation, fehlerhafte Guides im Internet
+unklare Dokumentation, fehlerhafte Guides im internet
