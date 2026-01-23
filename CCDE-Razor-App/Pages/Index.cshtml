@@ -67,12 +67,24 @@
                 {
                     <div class="form-group result-group">
                         <label asp-for="EncryptedText" class="form-label">Encrypted Result</label>
-                        <textarea
-                            asp-for="EncryptedText"
-                            class="form-control result-field"
-                            readonly
-                            aria-readonly="true"
-                            aria-describedby="encrypted-text-help"></textarea>
+                        <textarea id="encrypted-output"
+                                  asp-for="EncryptedText"
+                                  class="form-control result-field"
+                                  readonly
+                                  aria-readonly="true"
+                                  aria-describedby="encrypted-text-help"></textarea>
+                        <button type="button"
+                                class="btn btn-copy"
+                                data-textarea="encrypted-output"
+                                aria-label="Copy encrypted text to clipboard">
+                            <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                 fill="currentColor"
+                                 aria-hidden="true">
+                                <path
+                                    d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9zM9 5a1 1 0 000 2h6a1 1 0 100-2H9zM9 8a1 1 0 000 2h6a1 1 0 100-2H9zM9 11a1 1 0 100 2h6a1 1 0 100-2H9z"/>
+                            </svg>
+                            Copy
+                        </button>
                         <small id="encrypted-text-help" class="form-text success">✓ Text successfully encrypted</small>
                     </div>
                 }
@@ -120,16 +132,82 @@
                 {
                     <div class="form-group result-group">
                         <label asp-for="DecryptedText" class="form-label">Decrypted Result</label>
-                        <textarea
-                            asp-for="DecryptedText"
-                            class="form-control result-field"
-                            readonly
-                            aria-readonly="true"
-                            aria-describedby="decrypted-text-help"></textarea>
+                        <textarea id="decrypted-output"
+                                  asp-for="DecryptedText"
+                                  class="form-control result-field"
+                                  readonly
+                                  aria-readonly="true"
+                                  aria-describedby="decrypted-text-help"></textarea>
+                        <button type="button"
+                                class="btn btn-copy"
+                                data-textarea="decrypted-output"
+                                aria-label="Copy decrypted text to clipboard">
+                            <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                 fill="currentColor" aria-hidden="true">
+                                <path
+                                    d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9zM9 5a1 1 0 000 2h6a1 1 0 100-2H9zM9 8a1 1 0 000 2h6a1 1 0 100-2H9zM9 11a1 1 0 100 2h6a1 1 0 100-2H9z"/>
+                            </svg>
+                            Copy
+                        </button>
                         <small id="decrypted-text-help" class="form-text success">✓ Text successfully decrypted</small>
                     </div>
                 }
             </form>
         </section>
     </div>
+    <script>
+        document.addEventListener('click', async function (event) {
+            if (event.target.closest('button[data-textarea]')) {
+                const button = event.target.closest('button[data-textarea]');
+                const textareaId = button.getAttribute('data-textarea');
+                const textarea = document.getElementById(textareaId);
+
+                if (!textarea || !textarea.value.trim()) {
+                    console.warn('No content to copy');
+                    return;
+                }
+
+                const originalHTML = button.innerHTML;
+                const originalAria = button.getAttribute('aria-label');
+
+                button.setAttribute('aria-label', 'Copying...');
+
+                try {
+                    await navigator.clipboard.writeText(textarea.value);
+                    button.innerHTML = `
+                <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                Copied!
+            `;
+                    button.setAttribute('aria-label', 'Copied!');
+                } catch (err) {
+                    // Fallback: select and copy
+                    textarea.focus();
+                    textarea.select();
+                    textarea.setSelectionRange(0, 99999); // Mobile support
+                    try {
+                        document.execCommand('copy');
+                        button.innerHTML = `
+                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                    Copied!
+                `;
+                        button.setAttribute('aria-label', 'Copied!');
+                    } catch (fallbackErr) {
+                        button.innerHTML = originalHTML;
+                        button.setAttribute('aria-label', originalAria);
+                        return;
+                    }
+                }
+
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.setAttribute('aria-label', originalAria);
+                }, 2000);
+            }
+        });
+    </script>
+
 </div>
