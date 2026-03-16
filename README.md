@@ -8,6 +8,7 @@
 ## Disclaimer
 
 This project is only developed for educational purposes, and therefore won't be actively maintained after fulfilling the educational purpose.
+Because of that, it is **archived** then.
 Only for private use as well as for my teacher and friends.
 
 ## Description
